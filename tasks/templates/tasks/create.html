@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<form action="{% url 'tasks:create' %}" method="post">
+    {% csrf_token %}
+    <p>Create Task</p>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save</button>
+    </form>
+</form>
+{% endblock %}
+</body>
+</html>

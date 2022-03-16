@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <button type="button" class="btn btn-info"><a href="{% url 'tasks:create' %}" class="text-light">추가</a></button>
+    <button type="button" class="btn btn-info"><a href="{% url 'tasks:update' task.id %}" class="text-light">수정</a></button>
+    <button type="button" class="btn btn-info"><a href="{% url 'tasks:delete' task.id %}" class="text-light">삭제<a/></button>
+
+<h3>{{ task.name }}</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Progress</th>
+                <th>Achievement</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>{{ task.start_date }}</th>
+                <th>{{ task.end_date }}</th>
+                <th>{{ task.progress }}</th>
+                <th>{{ task.achievement }}%</th>
+            </tr>
+        </tbody>
+    </table>
+
+<h6>Task Log</h6>
+<ul class="list-group">
+    {% for log in tasklog %}
+    <li class="list-group-item">
+        <div>글쓴이: {{ log.user }}</div>
+        <div>{{ log.content }}</div>
+        <div>{{ log.progress }}</div>
+        <div>진행률: {{ log.achievement }}</div>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}
+</body>
+</html>
