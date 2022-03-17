@@ -2,8 +2,6 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import PROTECT, CASCADE
 
-from collabtasker import settings
-
 
 class Item(models.Model):
     name = models.TextField()
