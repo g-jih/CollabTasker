@@ -1,69 +1,109 @@
 import datetime
 from datetime import timezone
 
-from django.http import HttpResponse, Http404, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404, redirect, resolve_url
-from django.template import loader
-from django.urls import reverse
-from django.views import generic
+from django.http import Http404
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from tasks.forms import TaskForm
-from tasks.models import Task, Item, TaskLog
-
-
-class IndexView(generic.ListView):
-    template_name = '../templates/tasks/index.html'
-    context_object_name = 'task_list'
-
-    def get_queryset(self):
-        return Task.objects.all()
+from tasks.models import Task, TaskLog, TaskComment
+from tasks.serializers import TaskSerializer, TaskLogSerializer
 
 
-class DetailView(generic.DetailView):
-    model = Task
-    template_name = '../templates/tasks/detail.html'
+class TaskList(APIView):
+    def get(self, request):
+        tasks = Task.objects.all()
+        serializer = TaskSerializer(tasks, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = TaskSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-def detail(request, task_id):
-    task = get_object_or_404(Task, pk=task_id)
-    task_log = TaskLog.objects.filter(task=task_id)
-    return render(request, 'tasks/detail.html', {
-        'task': task,
-        'tasklog': task_log,
-        #'taskcomment': task_comment,
-    })
+class TaskDetail(APIView):
+    def get_object(self, pk):
+        try:
+            return Task.objects.get(pk=pk)
+        except Task.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        task = self.get_object(pk)
+        serializer = TaskSerializer(task)
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        task = self.get_object(pk)
+        serializer = TaskSerializer(task, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, format=None):
+        task = self.get_object(pk)
+        task.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-def create(request):
-    if request.method == 'POST':
-        form = TaskForm(request.POST)
-        if form.is_valid():
-            task = form.save(commit=False)
-            task.user = request.user
-            task.created_at = datetime.datetime.now()
-            task.save()
-            return HttpResponseRedirect(reverse('tasks:detail', args=(task.id,)))
-    else:
-        form = TaskForm()
-    return render(request, 'tasks/create.html', {'form': form})
+class TaskLogDetail(APIView):
+    def get_object(self, taskid):
+        try:
+            return TaskLog.objects.get(pk=taskid)
+        except TaskLog.DoesNotExist:
+            raise Http404
+
+    def get(self, request, taskid, format=None):
+        task_log = self.get_object(taskid)
+        serializer = TaskLogSerializer(task_log)
+        return Response(serializer.data)
+
+    def put(self, request, taskid, format=None):
+        task_log = self.get_object(taskid)
+        serializer = TaskLogSerializer(task_log, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, taskid, format=None):
+        task_log = self.get_object(taskid)
+        task_log.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-def update(request, task_id):
-    task = get_object_or_404(Task, pk=task_id)
-    if request.method == 'POST':
-        form = TaskForm(request.POST, instance=task)
-        if form.is_valid():
-            task = form.save(commit=False)
-            task.save()
-            return HttpResponseRedirect(reverse('tasks:detail', args=(task.id,)))
-    else:
-        form = TaskForm(instance=task)
-        return render(request, 'tasks/update.html', {'form': form})
+class TaskCommentSerializer:
+    pass
 
 
-def delete(request, task_id):
-    task = get_object_or_404(Task, pk=task_id)
-    task.delete()
-    return HttpResponseRedirect(reverse('tasks:index'))
+class TaskCommentDetail(APIView):
+    def get_object(self, tasklogid):
+        try:
+            return TaskComment.objects.get(pk=tasklogid)
+        except TaskComment.DoesNotExist:
+            raise Http404
+
+    def get(self, request, tasklogid, format=None):
+        task_comment = self.get_object(tasklogid)
+        serializer = TaskCommentSerializer(task_comment)
+        return Response(serializer.data)
+
+    def put(self, request, tasklogid, format=None):
+        task_comment = self.get_object(tasklogid)
+        serializer = TaskCommentSerializer(task_comment, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, tasklogid, format=None):
+        task_comment = self.get_object(tasklogid)
+        task_comment.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 
