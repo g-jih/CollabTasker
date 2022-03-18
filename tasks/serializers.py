@@ -14,13 +14,13 @@ class TaskGetSerializer(serializers.ModelSerializer):
         return obj.progress_type.name
 
     username = serializers.SerializerMethodField("getUsername")
-    item = serializers.SerializerMethodField("getItemName")
-    progress = serializers.SerializerMethodField("getProgressTypeName")
+    itemname = serializers.SerializerMethodField("getItemName")
+    progressname = serializers.SerializerMethodField("getProgressTypeName")
 
     class Meta:
         model = Task
-        fields = ('id', 'username', 'item', 'name', 'start_date', 'end_date',
-                  'progress', 'achievement', 'created_at')
+        fields = ('id', 'username', 'user', 'itemname', 'item', 'name', 'start_date', 'end_date',
+                  'progress_type', 'progressname', 'achievement', 'created_at')
 
 
 class TaskPostSerializer(serializers.ModelSerializer):
@@ -37,11 +37,11 @@ class TaskLogSerializer(serializers.ModelSerializer):
         return obj.progress_type.name
 
     username = serializers.SerializerMethodField("getUsername")
-    progress = serializers.SerializerMethodField("getProgressTypeName")
+    progressname = serializers.SerializerMethodField("getProgressTypeName")
 
     class Meta:
         model = TaskLog
-        fields = ('id', 'username', 'content', 'progress', 'achievement', 'published_at')
+        fields = ('id', 'user', 'username', 'content', 'progress_type', 'progressname', 'achievement', 'published_at')
 
 
 class TaskCommentSerializer(serializers.ModelSerializer):
@@ -52,7 +52,7 @@ class TaskCommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TaskComment
-        fields = ('id', 'username', 'task_log', 'content', 'created_at', 'modified_at')
+        fields = ('id', 'username', 'user', 'task_log', 'content', 'created_at', 'modified_at')
 
 
 class ItemSerializer(serializers.ModelSerializer):

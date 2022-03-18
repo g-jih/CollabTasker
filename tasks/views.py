@@ -39,10 +39,8 @@ class TaskDetail(APIView):
         return Response(serializer.data)
 
     def put(self, request, taskid, format=None):
-        print('!!!!!!!!!', request.data)
         task = self.get_object(taskid)
         serializer = TaskPostSerializer(task, data=request.data)
-        print('??????//', serializer)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

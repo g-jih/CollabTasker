@@ -97,7 +97,7 @@ function TaskDetail(props) {
                         <td>{task.username}</td>
                         <td>{task.start_date}</td>
                         <td>{task.end_date}</td>
-                        <td>{task.progress}</td>
+                        <td>{task.progressname}</td>
                         <td>{task.achievement}</td>
                         <td>{task.created_at}</td>
                     </tr>
@@ -108,7 +108,7 @@ function TaskDetail(props) {
                 {taskLogs.map((tasklog, idx) =>
                     <ListGroupItem key={`tasklog${idx}`} style={{textAlign: "left"}}>
                         <div>{tasklog.content}</div>
-                        <div>progress: {tasklog.progress}</div>
+                        <div>progress: {tasklog.progressname}</div>
                         <div>achievement: {tasklog.achievement}</div>
                         <div>writer: {tasklog.username}</div>
                         <div>published_at: {tasklog.published_at}</div>
