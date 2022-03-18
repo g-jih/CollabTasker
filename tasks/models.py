@@ -12,7 +12,7 @@ class Item(models.Model):
         return self.name
 
 
-class Progress(models.Model):
+class ProgressType(models.Model):
     name = models.CharField(max_length=10)
 
     def __str__(self):
@@ -21,15 +21,20 @@ class Progress(models.Model):
 
 class Task(models.Model):
     name = models.TextField()
-    item = models.ForeignKey(Item, on_delete=PROTECT, null=True)
+    user = models.ForeignKey(User, on_delete=PROTECT)
+    item = models.ForeignKey(Item, on_delete=PROTECT)
     start_date = models.DateField()
     end_date = models.DateField()
-    progress = models.ForeignKey(Progress, on_delete=PROTECT)
+    progress_type = models.ForeignKey(ProgressType, on_delete=PROTECT, default=1)
     achievement = models.IntegerField(default=0)
-    created_at = models.DateTimeField(null=True, default=datetime.now())
+    created_at = models.DateTimeField(default=datetime.now())
 
     def __str__(self):
         return self.name
+
+    @property
+    def user_name(self):
+        return self.user.username
 
 
 class Participant(models.Model):
@@ -41,12 +46,16 @@ class TaskLog(models.Model):
     task = models.ForeignKey(Task, on_delete=CASCADE)
     user = models.ForeignKey(User, on_delete=CASCADE)
     content = models.TextField(null=True)
-    progress = models.ForeignKey(Progress, on_delete=PROTECT)
+    progress_type = models.ForeignKey(ProgressType, on_delete=PROTECT, default=1)
     achievement = models.IntegerField(null=True)
-    published_at = models.DateTimeField(null=True, default=datetime.now())
+    published_at = models.DateTimeField(default=datetime.now())
 
     def __str__(self):
         return self.content
+
+    @property
+    def user_name(self):
+        return self.user.username
 
 
 class TaskComment(models.Model):
