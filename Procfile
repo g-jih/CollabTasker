@@ -1,1 +1,1 @@
-web: gunicorn collabtaskerapi.wsgi --log-file -
+web: gunicorn collabtasker.wsgi --log-file -
