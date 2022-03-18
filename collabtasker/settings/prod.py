@@ -1,0 +1,21 @@
+from ._base import *
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = False
+
+ALLOWED_HOSTS = ['collabtaskerapi.herokuapp.com']
+
+# Database
+# https://docs.djangoproject.com/en/4.0/ref/settings/#databases
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'collabtasker',
+        'USER': 'admin',
+        'PASSWORD': '0818',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
+    }
+}
+
