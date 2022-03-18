@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import PROTECT, CASCADE
@@ -19,11 +21,12 @@ class Progress(models.Model):
 
 class Task(models.Model):
     name = models.TextField()
+    item = models.ForeignKey(Item, on_delete=PROTECT, null=True)
     start_date = models.DateField()
     end_date = models.DateField()
     progress = models.ForeignKey(Progress, on_delete=PROTECT)
     achievement = models.IntegerField(default=0)
-    created_at = models.DateTimeField(null=True)
+    created_at = models.DateTimeField(null=True, default=datetime.now())
 
     def __str__(self):
         return self.name
@@ -40,7 +43,7 @@ class TaskLog(models.Model):
     content = models.TextField(null=True)
     progress = models.ForeignKey(Progress, on_delete=PROTECT)
     achievement = models.IntegerField(null=True)
-    published_at = models.DateTimeField(null=True)
+    published_at = models.DateTimeField(null=True, default=datetime.now())
 
     def __str__(self):
         return self.content
@@ -50,8 +53,8 @@ class TaskComment(models.Model):
     user = models.ForeignKey(User, on_delete=CASCADE)
     task_log = models.ForeignKey(TaskLog, on_delete=CASCADE)
     content = models.TextField()
-    created_at = models.DateTimeField(null=True)
-    modified_at = models.DateField(null=True)
+    created_at = models.DateTimeField(null=True, default=datetime.now())
+    modified_at = models.DateField(null=True, default=datetime.now())
 
     def __str__(self):
         return self.content

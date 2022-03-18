@@ -3,14 +3,15 @@ import axios from "axios";
 import "./TaskIndex.css"; 
 import { Link } from "react-router-dom";
 
-function TaskIndex() {
+function TaskIndex(props) {
     const [tasks, setTasks] = useState([]);
 
     useEffect(() => {
-        axios.get("http://127.0.0.1:8000/task/")
+        console.log('api', props.api);
+        axios.get(`${props.api}/task/`)
             .then((response) => {
                 setTasks(response.data);
-                //console.log(response.data);
+                console.log(response.data);
             }) 
             .catch(function (error) {
                 alert(error);

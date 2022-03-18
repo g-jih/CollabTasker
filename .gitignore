@@ -24,6 +24,9 @@ collabtasker/coverage
 # production
 collabtasker/build
 
+collabtasker/settings
+collabtasker/wsgi
+
 # misc
 .DS_Store
 .env.local

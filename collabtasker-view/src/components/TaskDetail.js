@@ -4,13 +4,13 @@ import axios from "axios";
 import { Table } from "react-bootstrap";
 import "./TaskDetail.css";
 
-function TaskDetail() {
+function TaskDetail(props) {
     const { taskid } = useParams();
     const [task, setTask] = useState({});
     const [taskLogs, setTaskLogs] = useState([]);
 
     useEffect(() => {
-        axios.get(`http://127.0.0.1:8000/task/${taskid}/`)
+        axios.get(`${props.api}/task/${taskid}/`)
             .then((response) => {
                 setTask(response.data);
                 console.log('task', response.data);
@@ -19,7 +19,7 @@ function TaskDetail() {
                 alert(error);
             });
 
-        axios.get(`http://127.0.0.1:8000/task/tasklogs/${taskid}/`)
+        axios.get(`${props.api}/task/tasklogs/${taskid}/`)
             .then((response) => {
                 setTaskLogs(response.data);
                 console.log('tasklog', response.data);
