@@ -57,6 +57,7 @@ function TaskForm(props) {
     }
 
     const createTask = () => {
+        console.log('form', form)
         axios.post(`${props.api}/task/`, {
             ...form,
             created_at: new Date(),

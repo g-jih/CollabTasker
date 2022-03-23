@@ -39,7 +39,7 @@ class Task(models.Model):
 
 class Participant(models.Model):
     user = models.ForeignKey(User, on_delete=CASCADE)
-    item = models.ForeignKey(Item, on_delete=CASCADE)
+    task = models.ForeignKey(Task, on_delete=CASCADE, null=True)
 
 
 class TaskLog(models.Model):

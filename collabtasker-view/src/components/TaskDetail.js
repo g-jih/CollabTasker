@@ -7,20 +7,21 @@ import "./TaskDetail.css";
 
 function TaskDetail(props) {
     const navigate = useNavigate();
-    const { taskid } = useParams();
+    const { task_id } = useParams();
     const [task, setTask] = useState({});
     const [taskLogs, setTaskLogs] = useState([]);
     const [taskComments, setTaskComments] = useState({});
 
     useEffect(() => {
-        getTasks();
+        getTask();
         getTaskLogs();
         //getTaskComments();
     }, [])
 
-    const getTasks = () => {
-        axios.get(`${props.api}/task/${taskid}/`)
+    const getTask = () => {
+        axios.get(`${props.api}/task/${task_id}/`)
             .then((response) => {
+                console.log('getTask', response.data);
                 setTask(response.data);
             }) 
             .catch(function (error) {
@@ -29,7 +30,7 @@ function TaskDetail(props) {
     }
 
     const getTaskLogs = () => {
-        axios.get(`${props.api}/task/tasklogs/${taskid}/`)
+        axios.get(`${props.api}/task/tasklogs/${task_id}/`)
             .then((response) => {
                 setTaskLogs(response.data);
                 response.data.forEach(tasklog => {
@@ -50,14 +51,14 @@ function TaskDetail(props) {
     }
 
     const updateTask = () => {
-        axios.put(`${props.api}/task/${taskid}/`,)
+        axios.put(`${props.api}/task/${task_id}/`,)
             .then(response => {
 
             })
     }
 
     const deleteTask = () => {
-        axios.delete(`${props.api}/task/${taskid}/`)
+        axios.delete(`${props.api}/task/${task_id}/`)
             .then(response => {
                 navigate('/');
             })
@@ -103,7 +104,7 @@ function TaskDetail(props) {
                     </tr>
                 </tbody>
             </Table>
-
+            <div>Collaborators: {task.participants.map(participant => <span key={participant}>{participant} </span>)}</div>
             <ListGroup>
                 {taskLogs.map((tasklog, idx) =>
                     <ListGroupItem key={`tasklog${idx}`} style={{textAlign: "left"}}>

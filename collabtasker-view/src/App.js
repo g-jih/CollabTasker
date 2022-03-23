@@ -21,7 +21,7 @@ function App() {
       </Navbar>
       <Routes>
         <Route path="/" element={<TaskIndex api={api}/>}/>
-        <Route path="/:taskid" element={<TaskDetail api={api}/>}/>
+        <Route path="/:task_id" element={<TaskDetail api={api}/>}/>
         <Route path="/form" element={<TaskForm api={api}/>}/>
       </Routes>
     </div>
