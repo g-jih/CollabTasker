@@ -8,8 +8,8 @@ import './TaskForm.css';
 function TaskForm(props) {
     const navigate = useNavigate();
     const location = useLocation();
-    const [items, setItems] = useState();
-    const [progressTypes, setProgressTypes] = useState();
+    const [items, setItems] = useState([]);
+    const [progressTypes, setProgressTypes] = useState([]);
     const [form, setForm] = useState(location.state.task);
     const mode = location.state.mode;
 
@@ -65,7 +65,7 @@ function TaskForm(props) {
         })
         .then((response) => {
             console.log('createTask response', response, response.data.id);
-            navigate(`/${response.data.id}`);
+            navigate(`/task/${response.data.id}`);
         })
         .catch(function (error) {
             alert(error);
@@ -77,7 +77,7 @@ function TaskForm(props) {
         axios.put(`${props.api}/task/${form.id}/`, form)
         .then((response) => {
             console.log('updateTask response', response, response.data.id);
-            navigate(`/${response.data.id}`);
+            navigate(`/task/${response.data.id}`);
         })
         .catch(function (error) {
             alert(error);
@@ -108,7 +108,7 @@ function TaskForm(props) {
                             {items && items.map(item =>
                                 <option key={item.name} label={item.name}>{item.id}</option>
                             )}
-                    </Form.Select>
+                        </Form.Select>
                     </Form.Group>
                     <Form.Group as={Col} controlId="progresstype">
                         <Form.Label>Progress</Form.Label>

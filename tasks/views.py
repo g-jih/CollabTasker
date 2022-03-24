@@ -1,10 +1,6 @@
-import datetime
-from datetime import timezone
-
-from django.db.migrations import serializer
 from django.http import Http404
 from rest_framework import status
-from rest_framework.generics import ListAPIView, GenericAPIView
+from rest_framework.generics import ListAPIView, GenericAPIView, get_object_or_404
 from rest_framework.mixins import CreateModelMixin, UpdateModelMixin, DestroyModelMixin, ListModelMixin, \
     RetrieveModelMixin
 from rest_framework.response import Response
@@ -127,5 +123,6 @@ class ProgressTypeList(APIView):
         items = ProgressType.objects.all()
         serializer = ProgressTypeSerializer(items, many=True)
         return Response(serializer.data)
+
 
 

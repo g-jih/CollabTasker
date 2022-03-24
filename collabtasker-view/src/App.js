@@ -2,6 +2,8 @@ import './App.css';
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import SignUp from './components/SignUp';
+import LogIn from './components/Login';
 import TaskIndex from "./components/TaskIndex";
 import TaskDetail from "./components/TaskDetail";
 import TaskForm from './components/TaskForm';
@@ -20,9 +22,11 @@ function App() {
         </Container>
       </Navbar>
       <Routes>
-        <Route path="/" element={<TaskIndex api={api}/>}/>
-        <Route path="/:task_id" element={<TaskDetail api={api}/>}/>
-        <Route path="/form" element={<TaskForm api={api}/>}/>
+        <Route path="/task" element={<TaskIndex api={api}/>}/>
+        <Route path="/signup" element={<SignUp api={api}/>}/>
+        <Route path="/" element={<LogIn api={api}/>}/>
+        <Route path="/task/:task_id" element={<TaskDetail api={api}/>}/>
+        <Route path="/task/form" element={<TaskForm api={api}/>}/>
       </Routes>
     </div>
   );

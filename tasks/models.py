@@ -48,7 +48,7 @@ class TaskLog(models.Model):
     content = models.TextField(null=True)
     progress_type = models.ForeignKey(ProgressType, on_delete=PROTECT, default=1)
     achievement = models.IntegerField(null=True)
-    published_at = models.DateTimeField(default=datetime.now())
+    published_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.content
@@ -62,7 +62,7 @@ class TaskComment(models.Model):
     user = models.ForeignKey(User, on_delete=CASCADE)
     task_log = models.ForeignKey(TaskLog, on_delete=CASCADE)
     content = models.TextField()
-    created_at = models.DateTimeField(null=True, default=datetime.now())
+    created_at = models.DateTimeField(null=True, auto_now_add=True)
     modified_at = models.DateField(null=True, default=datetime.now())
 
     def __str__(self):

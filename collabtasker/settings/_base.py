@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tasks',
+    'accounts',
     'rest_framework',
     'corsheaders',
 ]
@@ -120,4 +121,8 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 django_heroku.settings(locals())
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:3000',
+]
 

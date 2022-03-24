@@ -60,7 +60,7 @@ function TaskDetail(props) {
     const deleteTask = () => {
         axios.delete(`${props.api}/task/${task_id}/`)
             .then(response => {
-                navigate('/');
+                navigate('/task');
             })
     }
 
@@ -104,7 +104,7 @@ function TaskDetail(props) {
                     </tr>
                 </tbody>
             </Table>
-            <div>Collaborators: {task.participants.map(participant => <span key={participant}>{participant} </span>)}</div>
+            <div>Collaborators: {task.participants && task.participants.map(participant => <span key={participant}>{participant} </span>)}</div>
             <ListGroup>
                 {taskLogs.map((tasklog, idx) =>
                     <ListGroupItem key={`tasklog${idx}`} style={{textAlign: "left"}}>

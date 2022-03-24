@@ -1,11 +1,11 @@
-from django.urls import path, include
+from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from . import views
 from .views import TaskView, TaskDetailView, TaskLogDetail, TaskCommentDetail, TaskLogList, TaskCommentList, ItemList, \
     ProgressTypeList
 
 app_name = 'tasks'
+
 urlpatterns = [
     path('', TaskView.as_view()),
     path('<int:pk>/', TaskDetailView.as_view()),
