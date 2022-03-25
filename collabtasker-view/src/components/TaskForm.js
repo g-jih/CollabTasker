@@ -20,29 +20,34 @@ function TaskForm(props) {
     }, [])
 
     const getItems = () => {
-        axios.get(`${props.api}/task/items/`)
-            .then((response) => {
-                setItems(response.data);
-                console.log('item', response.data);
-                if (form.item === undefined) {
-                    setForm(prev => ({...prev, item: response.data[0].id}));
-                }
-            }) 
-            .catch(function (error) {
-                alert(error);
-            });
+        axios.get(`${props.api}/task/items/`, {
+            headers: {
+                'Authorization': props.token
+            }
+        }).then((response) => {
+            setItems(response.data);
+            console.log('item', response.data);
+            if (form.item === undefined) {
+                setForm(prev => ({...prev, item: response.data[0].id}));
+            }
+        }) 
+        .catch(function (error) {
+            alert(error);
+        });
     }
 
     const getProgressTypes = () => {
-        axios.get(`${props.api}/task/progresstype/`)
-        .then((response) => {
+        axios.get(`${props.api}/task/progresstype/`, {
+            headers: {
+                'Authorization': props.token
+            }
+        }).then((response) => {
             setProgressTypes(response.data);
             console.log('progresstype', response.data);
             if (form.progress_type === undefined) {
                 setForm(prev => ({...prev, progress_type: response.data[0].id}));
             }
-        }) 
-        .catch(function (error) {
+        }).catch(function (error) {
             alert(error);
         });
     }
@@ -62,8 +67,11 @@ function TaskForm(props) {
             ...form,
             created_at: new Date(),
             user: 1
-        })
-        .then((response) => {
+        }, {
+            headers: {
+                'Authorization': props.token
+            }
+        }).then((response) => {
             console.log('createTask response', response, response.data.id);
             navigate(`/task/${response.data.id}`);
         })
@@ -74,8 +82,11 @@ function TaskForm(props) {
 
     const updateTask = () => {
         console.log('update form', form)
-        axios.put(`${props.api}/task/${form.id}/`, form)
-        .then((response) => {
+        axios.put(`${props.api}/task/${form.id}/`, form, {
+            headers: {
+                'Authorization': props.token
+            }
+        }).then((response) => {
             console.log('updateTask response', response, response.data.id);
             navigate(`/task/${response.data.id}`);
         })

@@ -1,5 +1,6 @@
 from django.http import Http404
 from rest_framework import status
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.generics import ListAPIView, GenericAPIView, get_object_or_404
 from rest_framework.mixins import CreateModelMixin, UpdateModelMixin, DestroyModelMixin, ListModelMixin, \
     RetrieveModelMixin
@@ -10,15 +11,18 @@ from rest_framework.permissions import IsAuthenticated
 from tasks.models import Task, TaskLog, TaskComment, ProgressType, Item
 from tasks.serializers import TaskLogSerializer, TaskCommentSerializer, ItemSerializer, \
     ProgressTypeSerializer, TaskDetailSerializer, TaskGetSerializer
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 
 class TaskView(ListModelMixin, CreateModelMixin, GenericAPIView):
     queryset = Task.objects.order_by("-id")
     serializer_class = TaskDetailSerializer
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
+        print(request.user)
+        print('tasklist', request.META['HTTP_AUTHORIZATION'])
         return self.list(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -29,6 +33,8 @@ class TaskView(ListModelMixin, CreateModelMixin, GenericAPIView):
 class TaskDetailView(RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, GenericAPIView):
     queryset = Task.objects.order_by("-id")
     serializer_class = TaskDetailSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         self.serializer_class = TaskGetSerializer
@@ -42,6 +48,9 @@ class TaskDetailView(RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, Ge
 
 
 class TaskLogList(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, task_id):
         task_logs = TaskLog.objects.filter(task=task_id)
         serializer = TaskLogSerializer(task_logs, many=True)
@@ -56,6 +65,9 @@ class TaskLogList(APIView):
 
 
 class TaskLogDetail(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def get_object(self, task_log_id):
         try:
             return TaskLog.objects.get(pk=task_log_id)
@@ -83,6 +95,9 @@ class TaskLogDetail(APIView):
 
 
 class TaskCommentList(ListAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, task_log_id):
         taskcomments = TaskComment.objects.filter(task_log=task_log_id)
         serializer = TaskCommentSerializer(taskcomments, many=True)
@@ -90,6 +105,9 @@ class TaskCommentList(ListAPIView):
 
 
 class TaskCommentDetail(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def get_object(self, task_log_id):
         try:
             return TaskComment.objects.get(pk=task_log_id)
@@ -116,6 +134,9 @@ class TaskCommentDetail(APIView):
 
 
 class ItemList(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         items = Item.objects.all()
         serializer = ItemSerializer(items, many=True)
@@ -123,6 +144,9 @@ class ItemList(APIView):
 
 
 class ProgressTypeList(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         items = ProgressType.objects.all()
         serializer = ProgressTypeSerializer(items, many=True)

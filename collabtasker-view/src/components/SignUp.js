@@ -9,10 +9,8 @@ function SignUp(props) {
 
     const submitHandler = (e) => {
         e.preventDefault();
-        console.log('signup', form);
         axios.post(`${props.api}/signup/`, form)
         .then((response) => {
-            console.log('SignUp response', response);
             navigate('/');
         })
         .catch(function (error) {

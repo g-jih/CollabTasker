@@ -8,19 +8,21 @@ function TaskIndex(props) {
     const [tasks, setTasks] = useState([]);
 
     useEffect(() => {
-        console.log('api', props.api);
+        console.log('api', props.api, 'token', props.token);
         getTasks();
     }, []);
 
     const getTasks = () => {
-        axios.get(`${props.api}/task/`)
-            .then((response) => {
-                setTasks(response.data);
-                console.log(response.data);
-            }) 
-            .catch(function (error) {
-                alert(error);
-            });
+        axios.get(`${props.api}/task/`, {
+            headers: {
+                'Authorization': props.token
+            }
+        }).then((response) => {
+            setTasks(response.data);
+            console.log(response.data);
+        }).catch(function (error) {
+            alert(error);
+        });
     }
 
     return (
@@ -31,7 +33,7 @@ function TaskIndex(props) {
             <ListGroup>
                 {tasks.map(task =>
                 <ListGroupItem key={task.id + task.name}>
-                    <Link to={`/${task.id}`} key={task.id}>
+                    <Link to={`/task/${task.id}`} key={task.id}>
                         <div>{task.name}</div>
                     </Link>
                 </ListGroupItem>)}

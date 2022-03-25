@@ -5,7 +5,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -56,3 +56,10 @@ class LogIn(APIView):
             return Response({'token': token.key}, status=200)
         else:
             return Response({'error': '로그인 실패'}, status=404)
+
+
+class LogOut(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        token = request.token

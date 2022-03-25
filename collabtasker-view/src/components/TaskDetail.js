@@ -19,54 +19,62 @@ function TaskDetail(props) {
     }, [])
 
     const getTask = () => {
-        axios.get(`${props.api}/task/${task_id}/`)
-            .then((response) => {
-                console.log('getTask', response.data);
-                setTask(response.data);
-            }) 
-            .catch(function (error) {
-                alert(error);
-            });
+        axios.get(`${props.api}/task/${task_id}/`, {
+            headers: {
+                'Authorization': props.token
+            }
+        }).then((response) => {
+            console.log('getTask', response.data);
+            setTask(response.data);
+        }).catch(function (error) {
+            alert(error);
+        });
     }
 
     const getTaskLogs = () => {
-        axios.get(`${props.api}/task/tasklogs/${task_id}/`)
-            .then((response) => {
-                setTaskLogs(response.data);
-                response.data.forEach(tasklog => {
-                    getTaskComments(tasklog.id)
-                })
-            }) 
-            .catch(function (error) {
-                alert(error);
-            });
+        axios.get(`${props.api}/task/tasklogs/${task_id}/`, {
+            headers: {
+                'Authorization': props.token
+            }
+        }).then((response) => {
+            setTaskLogs(response.data);
+            response.data.forEach(tasklog => {
+                getTaskComments(tasklog.id)
+            })
+        }) 
+        .catch(function (error) {
+            alert(error);
+        });
     }
 
     const getTaskComments = (tasklogid) => {        
-        axios.get(`${props.api}/task/taskcomments/${tasklogid}/`)
-            .then((response) => {
-                console.log('task comments', response.data)
-                setTaskComments(prev => ({...prev, [tasklogid]: response.data}))
-            })
+        axios.get(`${props.api}/task/taskcomments/${tasklogid}/`, {
+            headers: {
+                'Authorization': props.token
+            }
+        }).then((response) => {
+            console.log('task comments', response.data)
+            setTaskComments(prev => ({...prev, [tasklogid]: response.data}))
+        })
     }
 
     const updateTask = () => {
-        axios.put(`${props.api}/task/${task_id}/`,)
+        axios.put(`${props.api}/task/${task_id}/`, )
             .then(response => {
 
             })
     }
 
     const deleteTask = () => {
-        axios.delete(`${props.api}/task/${task_id}/`)
-            .then(response => {
-                navigate('/task');
-            })
+        axios.delete(`${props.api}/task/${task_id}/`, {
+            headers: {
+                'Authorization': props.token
+            }
+        }).then(response => {
+            navigate('/task');
+        })
     }
 
-    useEffect(() => {
-        console.log('taskComments 변함', taskComments)
-    }, [taskComments])
     return (
         <div>
             {task.name}

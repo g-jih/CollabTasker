@@ -11,7 +11,7 @@ function LogIn(props) {
         e.preventDefault();
         axios.post(`${props.api}/login/`, form)
         .then((response) => {
-            console.log('LogIn response', response);
+            props.setToken(response.data.token);
             navigate('/task');
         })
         .catch(function (error) {

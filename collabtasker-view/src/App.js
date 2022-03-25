@@ -1,15 +1,6 @@
 import './App.css';
-import React from 'react';
-import { Route, Routes } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import SignUp from './components/SignUp';
-import LogIn from './components/Login';
-import TaskIndex from "./components/TaskIndex";
-import TaskDetail from "./components/TaskDetail";
-import TaskForm from './components/TaskForm';
+import Router from './routes';
 import { Navbar, Container } from 'react-bootstrap';
-//const api = 'https://collabtaskerapi.herokuapp.com'
-const api = 'http://127.0.0.1:8000'
 
 function App() {
   return (
@@ -21,13 +12,7 @@ function App() {
           </Navbar.Brand>
         </Container>
       </Navbar>
-      <Routes>
-        <Route path="/task" element={<TaskIndex api={api}/>}/>
-        <Route path="/signup" element={<SignUp api={api}/>}/>
-        <Route path="/" element={<LogIn api={api}/>}/>
-        <Route path="/task/:task_id" element={<TaskDetail api={api}/>}/>
-        <Route path="/task/form" element={<TaskForm api={api}/>}/>
-      </Routes>
+      <Router />
     </div>
   );
 }
