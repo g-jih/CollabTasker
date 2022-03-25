@@ -1,8 +1,11 @@
 from django.contrib import admin
 from django.urls import include, path
 
+from accounts.views import SignUp, LogIn
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('task/', include('tasks.urls')),
-    path('account/', include('accounts.urls')),
+    path('signup/', SignUp.as_view()),
+    path('login/', LogIn.as_view()),
 ]

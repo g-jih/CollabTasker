@@ -26,7 +26,7 @@ function TaskIndex(props) {
     return (
         <div>
             <Button variant="primary">
-                <Link to={`/form`} state={{ task: {}, mode: 'create'}}>추가</Link>
+                <Link to={`/task/form`} state={{ task: {}, mode: 'create'}}>추가</Link>
             </Button>
             <ListGroup>
                 {tasks.map(task =>

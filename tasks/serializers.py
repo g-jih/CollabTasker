@@ -35,9 +35,11 @@ class TaskDetailSerializer(serializers.ModelSerializer):
             "name",
             "start_date",
             "end_date",
+            "item",
             "progress_type",
             "achievement",
             "created_at",
+            "user"
         ]
 
         def create(self, validated_data, *args, **kwargs):

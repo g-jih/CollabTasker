@@ -9,12 +9,13 @@ function LogIn(props) {
 
     const submitHandler = (e) => {
         e.preventDefault();
-        axios.post(`${props.api}/account/login/`, form)
+        axios.post(`${props.api}/login/`, form)
         .then((response) => {
             console.log('LogIn response', response);
             navigate('/task');
         })
         .catch(function (error) {
+            console.log('error', error)
             alert(error);
         });
     }
@@ -34,6 +35,9 @@ function LogIn(props) {
                     Submit
                 </Button>
             </Form>
+            <Button variant="info" onClick={() => navigate('/signup')}>
+                Sign Up
+            </Button>
         </div>
     )
 }

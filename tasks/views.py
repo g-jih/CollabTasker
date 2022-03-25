@@ -5,20 +5,24 @@ from rest_framework.mixins import CreateModelMixin, UpdateModelMixin, DestroyMod
     RetrieveModelMixin
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 
 from tasks.models import Task, TaskLog, TaskComment, ProgressType, Item
 from tasks.serializers import TaskLogSerializer, TaskCommentSerializer, ItemSerializer, \
     ProgressTypeSerializer, TaskDetailSerializer, TaskGetSerializer
+from rest_framework.permissions import IsAuthenticated
 
 
 class TaskView(ListModelMixin, CreateModelMixin, GenericAPIView):
     queryset = Task.objects.order_by("-id")
     serializer_class = TaskDetailSerializer
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
+        print('request data', request.data)
         return self.create(request, *args, **kwargs)
 
 
