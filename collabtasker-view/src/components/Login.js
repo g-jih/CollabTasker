@@ -22,22 +22,24 @@ function LogIn(props) {
 
     return (
         <div>
-            <Form onSubmit={submitHandler}>
-                <Form.Group className="mb-3" controlId="username">
-                    <Form.Label>Username</Form.Label>
-                    <Form.Control type="text" value={form.username} onChange={(e) => setForm(prev => ({...prev, username: e.target.value}))} />
-                </Form.Group>
-                <Form.Group className="mb-3" controlId="password">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" value={form.password} onChange={(e) => setForm(prev => ({...prev, password: e.target.value}))} />
-                </Form.Group>
-                <Button variant="primary" type="submit">
-                    Submit
+            <div class="bg-light mx-auto align-middle col-6 col-md-4">
+                <Form onSubmit={submitHandler}>
+                    <Form.Group className="mb-3" controlId="username">
+                        <Form.Label>Username</Form.Label>
+                        <Form.Control type="text" value={form.username} onChange={(e) => setForm(prev => ({...prev, username: e.target.value}))} />
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="password">
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control type="password" value={form.password} onChange={(e) => setForm(prev => ({...prev, password: e.target.value}))} />
+                    </Form.Group>
+                    <Button variant="primary" type="submit">
+                        Submit
+                    </Button>
+                </Form>
+                <Button variant="dark" onClick={() => navigate('/signup')}>
+                    Sign Up
                 </Button>
-            </Form>
-            <Button variant="info" onClick={() => navigate('/signup')}>
-                Sign Up
-            </Button>
+            </div>
         </div>
     )
 }

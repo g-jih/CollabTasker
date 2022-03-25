@@ -1,8 +1,10 @@
 from django.contrib import auth
+from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.http import HttpResponse, JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -59,7 +61,10 @@ class LogIn(APIView):
 
 
 class LogOut(APIView):
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def post(self, request):
-        token = request.token
+    def get(self, request):
+        #request.user.auth_token.delete()
+        logout(request)
+        return Response(200)
