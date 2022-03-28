@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import { Table, ListGroup, ListGroupItem, Button, ButtonToolbar, ButtonGroup } from "react-bootstrap";
+import { Table, ListGroup, ListGroupItem, Button, ButtonToolbar, ButtonGroup, Form } from "react-bootstrap";
 import "./TaskDetail.css";
 
 function TaskDetail(props) {
@@ -11,6 +11,7 @@ function TaskDetail(props) {
     const [task, setTask] = useState({});
     const [taskLogs, setTaskLogs] = useState([]);
     const [taskComments, setTaskComments] = useState({});
+    const [newComment, setNewComment] = useState('');
 
     useEffect(() => {
         getTask();
@@ -58,13 +59,6 @@ function TaskDetail(props) {
         })
     }
 
-    const updateTask = () => {
-        axios.put(`${props.api}/task/${task_id}/`, )
-            .then(response => {
-
-            })
-    }
-
     const deleteTask = () => {
         axios.delete(`${props.api}/task/${task_id}/`, {
             headers: {
@@ -75,13 +69,29 @@ function TaskDetail(props) {
         })
     }
 
+    const submitCommentHandler = (tasklogid) => {
+        axios.post(`${props.api}/task/taskcomments/${tasklogid}/`, {
+            ...newComment
+        }, {
+            headers: {
+                'Authorization': props.token
+            }
+        }).then((response) => {
+            console.log('createTask response', response, response.data.id);
+            navigate(`/task/${response.data.id}`);
+        })
+        .catch(function (error) {
+            alert(error);
+        });
+    }
+
     return (
         <div>
             {task.name}
             <ButtonToolbar aria-label="Toolbar with button groups">
                 <ButtonGroup className="me-2" aria-label="First group">
                     <Button>
-                        <Link to={`/form`} state={{ task: task, mode: 'update' }}>
+                        <Link to={`/task/form`} state={{ task: task, mode: 'update' }}>
                             <div>수정</div>
                         </Link>
                     </Button>
@@ -112,7 +122,7 @@ function TaskDetail(props) {
                     </tr>
                 </tbody>
             </Table>
-            <div>Collaborators: {task.participants && task.participants.map(participant => <span key={participant}>{participant} </span>)}</div>
+            <div>Collaborators: {task.participants && task.participants.map(participant => <span key={participant.username}>{participant.username} </span>)}</div>
             <ListGroup>
                 {taskLogs.map((tasklog, idx) =>
                     <ListGroupItem key={`tasklog${idx}`} style={{textAlign: "left"}}>
@@ -123,11 +133,22 @@ function TaskDetail(props) {
                         <div>published_at: {tasklog.published_at}</div>
                         <ListGroup>
                             {taskComments[tasklog.id] && taskComments[tasklog.id].map((comment, i) => 
-                                <ListGroupItem key={i + comment.content}>
-                                    <div>{comment.content}</div>
-                                    <div>글쓴이: {comment.username}</div>
-                                    <div>created_at: {comment.created_at}</div>
-                                </ListGroupItem>)}
+                                    <ListGroupItem key={i + comment.content}>
+                                        <div>{comment.content}</div>
+                                        <div>글쓴이: {comment.username}</div>
+                                        <div>created_at: {comment.created_at}</div>
+                                    </ListGroupItem>)}
+                            <ListGroupItem>
+                                <Form onSubmit={() => submitCommentHandler(tasklog.id)}>
+                                    <Form.Group className="mb-3" controlId="formComment">
+                                        <Form.Label>Comment</Form.Label>
+                                        <Form.Control type="text" onChange={(e) => setNewComment(prev => ({...prev, content: e.target.value}))}/>
+                                    </Form.Group>
+                                    <Button variant="primary" type="submit">
+                                        Submit
+                                    </Button>
+                                </Form>
+                            </ListGroupItem>
                         </ListGroup>
                     </ListGroupItem>)}
             </ListGroup>

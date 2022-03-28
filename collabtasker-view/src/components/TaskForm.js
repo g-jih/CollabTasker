@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
+import Select from 'react-select';
 import './TaskForm.css';
 
 function TaskForm(props) {
@@ -9,13 +10,16 @@ function TaskForm(props) {
     const location = useLocation();
     const [items, setItems] = useState([]);
     const [progressTypes, setProgressTypes] = useState([]);
+    const [users, setUsers] = useState([]);
     const [form, setForm] = useState(location.state.task);
+    const [participants, setParticipants] = useState([]);
     const mode = location.state.mode;
 
     useEffect(() => {
         console.log('props.task', location.state.task);
         getItems();
         getProgressTypes();
+        getUsers();
     }, [])
 
     const getItems = () => {
@@ -25,7 +29,6 @@ function TaskForm(props) {
             }
         }).then((response) => {
             setItems(response.data);
-            console.log('item', response.data);
             if (form.item === undefined) {
                 setForm(prev => ({...prev, item: response.data[0].id}));
             }
@@ -36,16 +39,28 @@ function TaskForm(props) {
     }
 
     const getProgressTypes = () => {
-        axios.get(`${props.api}/task/progresstype/`, {
+        axios.get(`${props.api}/task/progresstypes/`, {
             headers: {
                 'Authorization': props.token
             }
         }).then((response) => {
             setProgressTypes(response.data);
-            console.log('progresstype', response.data);
             if (form.progress_type === undefined) {
                 setForm(prev => ({...prev, progress_type: response.data[0].id}));
             }
+        }).catch(function (error) {
+            alert(error);
+        });
+    }
+
+    const getUsers = () => {
+        axios.get(`${props.api}/task/users/`, {
+            headers: {
+                'Authorization': props.token
+            }
+        }).then((response) => {
+            console.log('users', response.data)
+            setUsers(response.data.map(user => ({value: user.id, label: user.username})));
         }).catch(function (error) {
             alert(error);
         });
@@ -61,11 +76,11 @@ function TaskForm(props) {
     }
 
     const createTask = () => {
-        console.log('form', form)
         axios.post(`${props.api}/task/`, {
             ...form,
-            created_at: new Date(),
-            user: 1
+            participants: undefined,
+            username: undefined,
+            participant_list: participants
         }, {
             headers: {
                 'Authorization': props.token
@@ -80,8 +95,12 @@ function TaskForm(props) {
     }
 
     const updateTask = () => {
-        console.log('update form', form)
-        axios.put(`${props.api}/task/${form.id}/`, form, {
+        axios.patch(`${props.api}/task/${form.id}/`, {
+            ...form,
+            participants: undefined,
+            username: undefined,
+            participant_list: participants
+        }, {
             headers: {
                 'Authorization': props.token
             }
@@ -92,6 +111,11 @@ function TaskForm(props) {
         .catch(function (error) {
             alert(error);
         });
+    }
+
+    const participantSelectChangeHandler = (options) => {
+        console.log('options', options)
+        setParticipants(options.map(option => option.value))
     }
 
     return (
@@ -133,6 +157,8 @@ function TaskForm(props) {
                         <Form.Control type="number" value={form.achievement} onChange={(e) => setForm(prev => ({...prev, achievement: e.target.value}))}/>
                     </Form.Group>
                 </Row>
+                <Select options={users} isMulti={true} isSearchable={true}
+                    onChange={participantSelectChangeHandler} />
                 <Button variant="primary" type="submit">
                     Submit
                 </Button>

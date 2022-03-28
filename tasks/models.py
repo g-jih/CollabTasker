@@ -36,10 +36,26 @@ class Task(models.Model):
     def user_name(self):
         return self.user.username
 
+    @property
+    def participants(self):
+        return Participant.objects.filter(task=self.id)
+
+    @property
+    def username(self):
+        return self.user.username
+
+    @property
+    def progressname(self):
+        return self.progress_type.name
+
 
 class Participant(models.Model):
     user = models.ForeignKey(User, on_delete=CASCADE)
     task = models.ForeignKey(Task, on_delete=CASCADE, null=True)
+
+    @property
+    def username(self):
+        return self.user.username
 
 
 class TaskLog(models.Model):
@@ -63,7 +79,7 @@ class TaskComment(models.Model):
     task_log = models.ForeignKey(TaskLog, on_delete=CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(null=True, auto_now_add=True)
-    modified_at = models.DateField(null=True, default=datetime.now())
+    modified_at = models.DateTimeField(null=True, default=datetime.now())
 
     def __str__(self):
         return self.content

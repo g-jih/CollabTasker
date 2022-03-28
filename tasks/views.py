@@ -1,16 +1,17 @@
+from django.contrib.auth.models import User
 from django.http import Http404
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.generics import ListAPIView, GenericAPIView, get_object_or_404
+from rest_framework.generics import ListAPIView, GenericAPIView, get_object_or_404, CreateAPIView
 from rest_framework.mixins import CreateModelMixin, UpdateModelMixin, DestroyModelMixin, ListModelMixin, \
     RetrieveModelMixin
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
 
 from tasks.models import Task, TaskLog, TaskComment, ProgressType, Item
 from tasks.serializers import TaskLogSerializer, TaskCommentSerializer, ItemSerializer, \
-    ProgressTypeSerializer, TaskDetailSerializer, TaskGetSerializer
+    ProgressTypeSerializer, TaskDetailSerializer, TaskGetSerializer, TaskCreateSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
 
@@ -21,12 +22,11 @@ class TaskView(ListModelMixin, CreateModelMixin, GenericAPIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
-        print(request.user)
-        print('tasklist', request.META['HTTP_AUTHORIZATION'])
         return self.list(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        print('request data', request.data)
+        print(request.data, request.user)
+        self.serializer_class = TaskCreateSerializer
         return self.create(request, *args, **kwargs)
 
 
@@ -37,13 +37,22 @@ class TaskDetailView(RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, Ge
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
+        pk = kwargs['pk']
+        if Task.objects.get(id=pk).user.id != request.user.id:
+            return Response(status=status.HTTP_403_FORBIDDEN)
         self.serializer_class = TaskGetSerializer
         return self.retrieve(request, *args, **kwargs)
 
-    def patch(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
+    def patch(self, request: Request, *args, **kwargs):
+        pk = kwargs['pk']
+        if Task.objects.get(id=pk).user.id != request.user.id:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+        return self.update(request, partial=True, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
+        pk = kwargs['pk']
+        if Task.objects.get(id=pk).user.id != request.user.id:
+            return Response(status=status.HTTP_403_FORBIDDEN)
         return self.destroy(request, *args, **kwargs)
 
 
@@ -94,7 +103,7 @@ class TaskLogDetail(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class TaskCommentList(ListAPIView):
+class TaskCommentList(ListAPIView, CreateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -103,6 +112,11 @@ class TaskCommentList(ListAPIView):
         serializer = TaskCommentSerializer(taskcomments, many=True)
         return Response(serializer.data)
 
+    def post(self, request, task_log_id):
+        tasklog = TaskLog.objects.get(pk=task_log_id)
+        taskcomment = TaskComment.objects.create(task_log=tasklog, user=request.user, content=request.data['content'])
+        serializer = TaskCommentSerializer(taskcomment)
+        return Response(serializer.data)
 
 class TaskCommentDetail(APIView):
     authentication_classes = [TokenAuthentication]
@@ -114,21 +128,21 @@ class TaskCommentDetail(APIView):
         except TaskComment.DoesNotExist:
             raise Http404
 
-    def get(self, request, task_log_id, format=None):
-        task_comment = self.get_object(task_log_id)
+    def get(self, request, task_comment_id, format=None):
+        task_comment = self.get_object(task_comment_id)
         serializer = TaskCommentSerializer(task_comment)
         return Response(serializer.data)
 
-    def put(self, request, task_log_id, format=None):
-        task_comment = self.get_object(task_log_id)
+    def put(self, request, task_comment_id, format=None):
+        task_comment = self.get_object(task_comment_id)
         serializer = TaskCommentSerializer(task_comment, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, task_log_id, format=None):
-        task_comment = self.get_object(task_log_id)
+    def delete(self, request, task_comment_id, format=None):
+        task_comment = self.get_object(task_comment_id)
         task_comment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -151,6 +165,15 @@ class ProgressTypeList(APIView):
         items = ProgressType.objects.all()
         serializer = ProgressTypeSerializer(items, many=True)
         return Response(serializer.data)
+
+
+class UserList(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        usernames = User.objects.values('id', 'username')
+        return Response(usernames)
 
 
 

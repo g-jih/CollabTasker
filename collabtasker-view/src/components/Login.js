@@ -22,7 +22,7 @@ function LogIn(props) {
 
     return (
         <div>
-            <div class="bg-light mx-auto align-middle col-6 col-md-4">
+            <div className="bg-light mx-auto align-middle col-6 col-md-4">
                 <Form onSubmit={submitHandler}>
                     <Form.Group className="mb-3" controlId="username">
                         <Form.Label>Username</Form.Label>

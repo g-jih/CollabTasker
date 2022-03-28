@@ -65,6 +65,6 @@ class LogOut(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        #request.user.auth_token.delete()
+        #ddjljkdrequest.user.auth_token.delete()
         logout(request)
         return Response(200)
