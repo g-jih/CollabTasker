@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./TaskIndex.css"; 
 import { Link } from "react-router-dom";
-import { Table, ListGroup, ListGroupItem, Button } from "react-bootstrap";
+import GanttChart from "./GanttChart";
 
 function TaskIndex(props) {
+    const [chartData, setChartData] = useState([]);
     const [tasks, setTasks] = useState([]);
 
     useEffect(() => {
@@ -19,25 +20,40 @@ function TaskIndex(props) {
             }
         }).then((response) => {
             setTasks(response.data);
+            let items = {};
+            response.data.forEach(task => {
+                const taskData = {
+                    id: task.id,
+                    name: task.name,
+                    startDate: task.start_date,
+                    endDate: task.end_date,
+                    achievement: task.achievement,
+                    progress: task.progress_type
+                }
+                if (task.item in items) {
+                    items[task.item].tasks.push(taskData);
+                } else {
+                    items[task.item] = {
+                        name: task.itemname,
+                        tasks: [taskData]
+                    }
+                }
+            });
+            setChartData(Object.keys(items).map(key => ({id: key, ...items[key]})));
+
             console.log(response.data);
+            console.log('chartData', items);
         }).catch(function (error) {
             alert(error);
         });
     }
-
+    
     return (
         <div>
-            <Button variant="primary">
+            <GanttChart data={chartData}/>
+            <button className="button add-button">
                 <Link to={`/task/form`} state={{ task: {}, mode: 'create'}}>추가</Link>
-            </Button>
-            <ListGroup>
-                {tasks.map(task =>
-                <ListGroupItem key={task.id + task.name}>
-                    <Link to={`/task/${task.id}`} key={task.id}>
-                        <div>{task.name}</div>
-                    </Link>
-                </ListGroupItem>)}
-            </ListGroup>
+            </button>
         </div>
     )
 }

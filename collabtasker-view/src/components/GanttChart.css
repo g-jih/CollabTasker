@@ -1,0 +1,37 @@
+.gantt-chart-row {
+    display: flex;
+    justify-content: start;
+    height: 30px;
+    margin-bottom: 5px;
+}
+
+.gantt-chart-row:last-child {
+    margin-bottom: 0;
+}
+
+.gantt-chart-group {
+    margin-bottom: 20px;
+}
+
+.gantt-chart-group:last-child {
+    margin-bottom: 0;
+}
+
+.gantt-chart-name {
+    width: 100px;
+    overflow: hidden;
+}
+
+.gantt-chart-item-name {
+    background-color: cadetblue;
+}
+
+.gantt-chart-task-name {
+    background-color: blanchedalmond;
+}
+
+.gantt-chart-bar {
+    background-color: aquamarine;
+    height: 20px;
+    margin: auto;
+}

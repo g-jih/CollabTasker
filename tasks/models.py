@@ -33,16 +33,20 @@ class Task(models.Model):
         return self.name
 
     @property
-    def user_name(self):
-        return self.user.username
-
-    @property
     def participants(self):
         return Participant.objects.filter(task=self.id)
 
     @property
     def username(self):
         return self.user.username
+
+    @property
+    def progressname(self):
+        return self.progress_type.name
+
+    @property
+    def itemname(self):
+        return self.item.name
 
     @property
     def progressname(self):
