@@ -7,7 +7,9 @@ function GanttChart(props) {
     const [startDate, setStartDate] = useState();
     const [endDate, setEndDate] = useState();
     const [chartData, setChartData] = useState([]);
-    const widthUnit = 10;
+    const { innerWidth: width, innerHeight: height } = window;
+    const nameWidth = 100;
+    const [widthUnit, setWidthUnit] = useState(20);
 
     function initChartData(rawData) {
         let wholeStartDate, wholeEndDate;
@@ -36,16 +38,36 @@ function GanttChart(props) {
         setChartData(data);
         setStartDate(wholeStartDate);
         setEndDate(wholeEndDate);
+        setWidthUnit((width - nameWidth) / getDifferenceInDays(wholeStartDate, wholeEndDate));
+        console.log(wholeStartDate, wholeEndDate);
+        console.log(typeof width, typeof nameWidth, typeof getDifferenceInDays(wholeStartDate, wholeEndDate), 
+         width - nameWidth, '/',  getDifferenceInDays(wholeStartDate, wholeEndDate), '/', (width - nameWidth) / getDifferenceInDays(wholeStartDate, wholeEndDate));
     }
 
     useEffect(() => {
         initChartData(props.data);
+        console.log('width', width);
     }, [props.data]);
 
     return (
-        <div>
-            <div className="gantt-chart-header">
+        <div className="gantt-chart">
+            <div className="gantt-chart-grid" style={{width: widthUnit * getDifferenceInDays(startDate, endDate) + nameWidth }}>
 
+            </div>
+            <div className="gantt-chart-header">
+                <div className="gantt-chart-row">
+                    <div className="gantt-chart-name">
+                        Name
+                    </div>
+                    <div className="gantt-chart-date-bar">
+                        <div className="gantt-chart-date" style={{left: nameWidth}}>
+                            {startDate}
+                        </div>
+                        <div className="gantt-chart-date" style={{left: widthUnit * getDifferenceInDays(startDate, endDate) + nameWidth}}>
+                            {endDate}
+                        </div>
+                    </div>
+                </div>
             </div>
             <div className="gantt-chart-body">
                 {chartData.map(item => 

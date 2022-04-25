@@ -1,25 +1,63 @@
+.gantt-chart {
+    position: relative;
+    border: 1px solid gray;
+    border-radius: 5px;
+    margin: 20px;
+    font-size: 0.8rem;
+}
+
+.gantt-chart-grid {
+    position: absolute;
+    left: 100px;
+    top: 0;
+    height: 100%;
+}
+
+.gantt-chart-header {
+
+}
+
+.gantt-chart-date-bar {
+    width: 100%;
+    position: absolute;
+}
+
+.gantt-chart-date {
+    position: absolute;
+}
+
+.gantt-chart-body {
+}
+
 .gantt-chart-row {
     display: flex;
     justify-content: start;
     height: 30px;
+    line-height: 30px;
     margin-bottom: 5px;
 }
 
 .gantt-chart-row:last-child {
-    margin-bottom: 0;
+    margin-bottom: 10px;
 }
 
 .gantt-chart-group {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid gray;
 }
 
 .gantt-chart-group:last-child {
     margin-bottom: 0;
+    border: none;
 }
 
 .gantt-chart-name {
     width: 100px;
     overflow: hidden;
+}
+
+.gantt-chart-name:hover {
+    cursor: pointer;
 }
 
 .gantt-chart-item-name {
@@ -33,5 +71,6 @@
 .gantt-chart-bar {
     background-color: aquamarine;
     height: 20px;
+    line-height: 20px;
     margin: auto;
 }
