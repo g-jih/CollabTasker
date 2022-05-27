@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Form, Button, Row, Col } from "react-bootstrap";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
-import Select from 'react-select';
 import './TaskForm.css';
 
 function TaskForm(props) {
@@ -120,49 +118,49 @@ function TaskForm(props) {
 
     return (
         <div>
-            <Form onSubmit={submitHandler}>
-                <Form.Group className="mb-3" controlId="name">
-                    <Form.Label>Name</Form.Label>
-                    <Form.Control type="text" value={form.name} onChange={(e) => setForm(prev => ({...prev, name: e.target.value}))} />
-                </Form.Group>
-                <Row className="mb-3">
-                    <Form.Group as={Col} controlId="startDate">
-                        <Form.Label>Start Date</Form.Label>
-                        <Form.Control type="date" value={form.start_date} onChange={(e) => setForm(prev => ({...prev, start_date: e.target.value}))}/>
-                    </Form.Group>
-                    <Form.Group as={Col} controlId="endDate">
-                        <Form.Label>End Date</Form.Label>
-                        <Form.Control type="date" value={form.end_date} onChange={(e) => setForm(prev => ({...prev, end_date: e.target.value}))}/>
-                    </Form.Group>
-                </Row>
-                <Row className="mb-3">
-                    <Form.Group as={Col} controlId="item">
-                        <Form.Label>상위카테고리</Form.Label>
-                        <Form.Select value={form.item} onChange={(e) => setForm(prev => ({...prev, item: e.target.value}))}>
+            <form onSubmit={submitHandler}>
+                <div className="mb-3" controlId="name">
+                    <label>Name</label>
+                    <input type="text" value={form.name} onChange={(e) => setForm(prev => ({...prev, name: e.target.value}))} />
+                </div>
+                <div className="mb-3">
+                    <div controlId="startDate">
+                        <label>Start Date</label>
+                        <input type="date" value={form.start_date} onChange={(e) => setForm(prev => ({...prev, start_date: e.target.value}))}/>
+                    </div>
+                    <div controlId="endDate">
+                        <label>End Date</label>
+                        <input type="date" value={form.end_date} onChange={(e) => setForm(prev => ({...prev, end_date: e.target.value}))}/>
+                    </div>
+                </div>
+                <div className="mb-3">
+                    <div controlId="item">
+                        <label>상위카테고리</label>
+                        <select value={form.item} onChange={(e) => setForm(prev => ({...prev, item: e.target.value}))}>
                             {items && items.map(item =>
                                 <option key={item.name} label={item.name}>{item.id}</option>
                             )}
-                        </Form.Select>
-                    </Form.Group>
-                    <Form.Group as={Col} controlId="progresstype">
-                        <Form.Label>Progress</Form.Label>
-                        <Form.Select value={form.progress_type} onChange={(e) => setForm(prev => ({...prev, progress_type: e.target.value}))}>
+                        </select>
+                    </div>
+                    <div controlId="progresstype">
+                        <label>Progress</label>
+                        <select value={form.progress_type} onChange={(e) => setForm(prev => ({...prev, progress_type: e.target.value}))}>
                             {progressTypes && progressTypes.map(type =>
                                 <option key={type.name} label={type.name}>{type.id}</option>
                             )}
-                    </Form.Select>
-                    </Form.Group>
-                    <Form.Group as={Col} controlId="achievement">
-                        <Form.Label>Achievement</Form.Label>
-                        <Form.Control type="number" value={form.achievement} onChange={(e) => setForm(prev => ({...prev, achievement: e.target.value}))}/>
-                    </Form.Group>
-                </Row>
-                <Select options={users} isMulti={true} isSearchable={true}
+                    </select>
+                    </div>
+                    <div controlId="achievement">
+                        <label>Achievement</label>
+                        <input type="number" value={form.achievement} onChange={(e) => setForm(prev => ({...prev, achievement: e.target.value}))}/>
+                    </div>
+                </div>
+                <select options={users} isMulti={true} isSearchable={true}
                     onChange={participantSelectChangeHandler} />
-                <Button variant="primary" type="submit">
+                <button variant="primary" type="submit">
                     Submit
-                </Button>
-            </Form>
+                </button>
+            </form>
         </div>
     )
 }

@@ -1,0 +1,43 @@
+.login {
+    width: 100%;
+}
+
+.login-title {
+    font-family: 'Gugi', cursive;
+    font-size: 50px;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+.login input, .login button {
+    border: none;
+    width: 50%;
+    max-width: 400px;
+    height: 30px;
+    border-radius: 10px;
+    margin-top: 10px;
+    padding: 10px;
+    border: 2px solid rgb(200, 200, 200);
+
+}
+
+.login input:focus{
+    border: 2px solid violet;
+    outline: none;
+}
+
+.login button[type=submit] {
+    box-sizing: content-box;
+    background-color: violet;
+    border-color: violet;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.sign-up {
+    margin: 10px auto;
+    width: 55px;
+    border-bottom: 1px solid black;
+    cursor: pointer;
+}

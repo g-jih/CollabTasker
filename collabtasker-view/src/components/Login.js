@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Form, Button } from "react-bootstrap";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import './Login.css';
 
 function LogIn(props) {
     const navigate = useNavigate();
@@ -22,23 +22,26 @@ function LogIn(props) {
 
     return (
         <div>
-            <div className="bg-light mx-auto align-middle col-6 col-md-4">
-                <Form onSubmit={submitHandler}>
-                    <Form.Group className="mb-3" controlId="username">
-                        <Form.Label>Username</Form.Label>
-                        <Form.Control type="text" value={form.username} onChange={(e) => setForm(prev => ({...prev, username: e.target.value}))} />
-                    </Form.Group>
-                    <Form.Group className="mb-3" controlId="password">
-                        <Form.Label>Password</Form.Label>
-                        <Form.Control type="password" value={form.password} onChange={(e) => setForm(prev => ({...prev, password: e.target.value}))} />
-                    </Form.Group>
-                    <Button variant="primary" type="submit">
-                        Submit
-                    </Button>
-                </Form>
-                <Button variant="dark" onClick={() => navigate('/signup')}>
+            <div className="login">
+                <div className="login-title disable-drag" onClick={() => navigate('/')}>CollabTasker</div>
+                <form onSubmit={submitHandler} class="login-form">
+                    <div class="login-form">
+                        <input type="text" name="username" id="username" placeholder="username"
+                            value={form.username} onChange={(e) => setForm(prev => ({...prev, username: e.target.value}))}
+                            required/>
+                    </div>
+                    <div class="login-form">
+                        <input type="password" name="password" id="password" placeholder="password"
+                            value={form.password} onChange={(e) => setForm(prev => ({...prev, password: e.target.value}))}
+                            required/>
+                    </div>
+                    <div class="login-form">
+                        <button type="submit">Sign In</button>
+                    </div>
+                </form>
+                <div class="sign-up disable-drag" onClick={() => navigate('/signup')}>
                     Sign Up
-                </Button>
+                </div>
             </div>
         </div>
     )

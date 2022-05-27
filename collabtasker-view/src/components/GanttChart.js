@@ -10,6 +10,8 @@ function GanttChart(props) {
     const { innerWidth: width, innerHeight: height } = window;
     const nameWidth = 100;
     const [widthUnit, setWidthUnit] = useState(20);
+    const [gridLines, setGridLines] = useState();
+    const [days, setDays] = useState(0);
 
     function initChartData(rawData) {
         let wholeStartDate, wholeEndDate;
@@ -49,10 +51,16 @@ function GanttChart(props) {
         console.log('width', width);
     }, [props.data]);
 
+    useEffect(() => {
+        setDays(getDifferenceInDays(startDate, endDate));
+        setGridLines(Array.from(Array(parseInt(days / 5)).keys()).map(key =>
+            <div key={'line' + key} className="gantt-chart-grid-line" style={{width: widthUnit * 5, marginLeft: widthUnit * key * 5}}></div>));
+    }, [startDate, endDate]);
+
     return (
         <div className="gantt-chart">
-            <div className="gantt-chart-grid" style={{width: widthUnit * getDifferenceInDays(startDate, endDate) + nameWidth }}>
-
+            <div className="gantt-chart-grid" style={{width: widthUnit * days + nameWidth }}>
+                {gridLines}
             </div>
             <div className="gantt-chart-header">
                 <div className="gantt-chart-row">
@@ -63,7 +71,7 @@ function GanttChart(props) {
                         <div className="gantt-chart-date" style={{left: nameWidth}}>
                             {startDate}
                         </div>
-                        <div className="gantt-chart-date" style={{left: widthUnit * getDifferenceInDays(startDate, endDate) + nameWidth}}>
+                        <div className="gantt-chart-date" style={{left: widthUnit * days + nameWidth}}>
                             {endDate}
                         </div>
                     </div>
@@ -76,9 +84,11 @@ function GanttChart(props) {
                             <div className="gantt-chart-name gantt-chart-item-name">
                                 {item.name}
                             </div>
-                            <div className="gantt-chart-bar" 
-                                style={{ marginLeft: widthUnit * getDifferenceInDays(startDate, item.startDate),
-                                    width: item.days === 0 ? widthUnit * 0.5 : widthUnit * item.days }}>
+                            <div className="gantt-chart-bar-container">
+                                <div className="gantt-chart-bar" 
+                                    style={{ marginLeft: widthUnit * getDifferenceInDays(startDate, item.startDate),
+                                        width: item.days === 0 ? widthUnit * 0.5 : widthUnit * item.days }}>
+                                </div>
                             </div>
                         </div>
                         {item.tasks.map(task => 
@@ -86,10 +96,16 @@ function GanttChart(props) {
                                 <div className="gantt-chart-name gantt-chart-task-name" onClick={() => navigate(`/task/${task.id}`)}>
                                     {task.name}
                                 </div>
-                                <div className="gantt-chart-bar" 
-                                    style={{ marginLeft: widthUnit * getDifferenceInDays(startDate, task.startDate),
-                                            width: task.days === 0 ? widthUnit * 0.5 : widthUnit * task.days }}>
-                                    {task.achievement}
+                                <div className="gantt-chart-bar-container">
+                                    <div className="gantt-chart-bar" 
+                                        style={{ marginLeft: widthUnit * getDifferenceInDays(startDate, task.startDate),
+                                                width: task.days === 0 ? widthUnit * 0.5 : widthUnit * task.days }}>
+                                    </div>
+                                    <div className="gantt-chart-bar gantt-chart-bar-achievement" 
+                                        style={{ marginLeft: widthUnit * getDifferenceInDays(startDate, task.startDate),
+                                                width: widthUnit * task.days * task.achievement / 100}}>
+                                        {task.achievement}%
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -102,6 +118,9 @@ function GanttChart(props) {
 export default GanttChart;
 
 function getDifferenceInDays(startDate, endDate) {
+    if (startDate === undefined || endDate === undefined) {
+        return 1;
+    }
     const date1 = new Date(startDate);
     const date2 = new Date(endDate);
 

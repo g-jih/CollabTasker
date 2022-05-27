@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import { Table, ListGroup, ListGroupItem, Button, ButtonToolbar, ButtonGroup, Form } from "react-bootstrap";
 import "./TaskDetail.css";
 
 function TaskDetail(props) {
@@ -88,17 +87,15 @@ function TaskDetail(props) {
     return (
         <div>
             {task.name}
-            <ButtonToolbar aria-label="Toolbar with button groups">
-                <ButtonGroup className="me-2" aria-label="First group">
-                    <Button>
-                        <Link to={`/task/form`} state={{ task: task, mode: 'update' }}>
-                            <div>수정</div>
-                        </Link>
-                    </Button>
-                    <Button onClick={deleteTask}>삭제</Button>
-                </ButtonGroup>
-            </ButtonToolbar>
-            <Table striped bordered hover>
+            <button>
+                <Link to={`/task/form`} state={{ task: task, mode: 'update' }}>
+                    <div>수정</div>
+                </Link>
+            </button>
+            <button onClick={deleteTask}>
+                삭제
+            </button>
+            <table>
                 <thead>
                     <tr>
                         <th>name</th>
@@ -121,37 +118,33 @@ function TaskDetail(props) {
                         <td>{task.created_at}</td>
                     </tr>
                 </tbody>
-            </Table>
+            </table>
             <div>Collaborators: {task.participants && task.participants.map(participant => <span key={participant.username}>{participant.username} </span>)}</div>
-            <ListGroup>
+            <ul>
                 {taskLogs.map((tasklog, idx) =>
-                    <ListGroupItem key={`tasklog${idx}`} style={{textAlign: "left"}}>
+                    <li key={`tasklog${idx}`} style={{textAlign: "left"}}>
                         <div>{tasklog.content}</div>
                         <div>progress: {tasklog.progressname}</div>
                         <div>achievement: {tasklog.achievement}</div>
                         <div>writer: {tasklog.username}</div>
                         <div>published_at: {tasklog.published_at}</div>
-                        <ListGroup>
+                        <ul>
                             {taskComments[tasklog.id] && taskComments[tasklog.id].map((comment, i) => 
-                                    <ListGroupItem key={i + comment.content}>
+                                    <li key={i + comment.content}>
                                         <div>{comment.content}</div>
                                         <div>글쓴이: {comment.username}</div>
                                         <div>created_at: {comment.created_at}</div>
-                                    </ListGroupItem>)}
-                            <ListGroupItem>
-                                <Form onSubmit={() => submitCommentHandler(tasklog.id)}>
-                                    <Form.Group className="mb-3" controlId="formComment">
-                                        <Form.Label>Comment</Form.Label>
-                                        <Form.Control type="text" onChange={(e) => setNewComment(prev => ({...prev, content: e.target.value}))}/>
-                                    </Form.Group>
-                                    <Button variant="primary" type="submit">
-                                        Submit
-                                    </Button>
-                                </Form>
-                            </ListGroupItem>
-                        </ListGroup>
-                    </ListGroupItem>)}
-            </ListGroup>
+                                    </li>)}
+                            <li>
+                                <div>
+                                    <div>Comment</div>
+                                    <input  type="text" onChange={(e) => setNewComment(prev => ({...prev, content: e.target.value}))} />
+                                    <button onClick={() => submitCommentHandler(tasklog.id)}>Submit</button>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>)}
+            </ul>
         </div>
     )
 }
