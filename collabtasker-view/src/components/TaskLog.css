@@ -1,0 +1,59 @@
+.task-log {
+    border: 1px solid #000000;
+    margin: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+}
+
+.task-log-top {
+    line-height: 1.5rem;
+}
+
+.task-log-title {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.task-log-date {
+    margin-left: 20px;
+}
+
+.task-comment-section {
+    margin-top: 20px;
+}
+
+.task-comment-input {
+    margin: 20px;
+    border-radius: 5px;
+}
+
+.task-comment-input input {
+    border: none;
+    width: 75%;
+    height: 20px;
+    border-radius: 10px;
+    margin-top: 10px;
+    margin-right: 10px;
+    padding: 10px;
+    border: 2px solid rgb(200, 200, 200);
+
+}
+
+.task-comment-input input:focus{
+    border: 2px solid blueviolet;
+    outline: none;
+}
+
+.task-comment-input button[type=submit]:hover {
+    box-sizing: content-box;
+    background-color: blueviolet;
+    border-color: blueviolet;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.task-comment-submit {
+    width: 70px;
+}

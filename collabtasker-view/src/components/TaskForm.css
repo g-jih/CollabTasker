@@ -1,0 +1,60 @@
+.task-form-input-container {
+    margin: 20px;
+}
+
+.task-form-item {
+    display: flex;
+    justify-content: left;
+    margin: 10px;
+}
+
+.task-form-name {
+    width: 150px;
+    font-weight: 600;
+    text-align: left;
+    padding: 10px;
+    height: 20px;
+    line-height: 25px;
+}
+
+.task-form input, .task-form select {
+    width: 200px;
+    height: 20px;
+    padding: 10px;
+    border: none;
+    border-bottom: 1px solid rgb(200, 200, 200);
+    transition: all 0.2s linear;
+}
+
+.task-form select {
+    width: 220px;
+    height: 40px;
+    padding: 10px 10px 10px 5px;
+}
+
+.task-form input:focus, .task-form select:focus {
+    outline: none;
+    border-bottom: 1px solid violet;
+}
+
+.task-form option {
+    padding: 10px;
+}
+
+.task-form option:focus {
+    background-color: violet;
+    color: white;
+}
+
+.task-form button[type=submit] {
+    width: 200px;
+    box-sizing: content-box;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.task-form button[type=submit]:hover {
+    background-color: violet;
+    border-color: violet;
+    color: white;
+}

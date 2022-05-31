@@ -19,7 +19,7 @@ function Router() {
         setCookie('token', `TOKEN ${token}`);
     }
 
-    const logout = () => {
+    const logout = async () => {
         axios.get(`${api}/logout/`, {
             headers: {
                 'Authorization': cookies.token

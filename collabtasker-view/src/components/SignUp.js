@@ -7,7 +7,7 @@ function SignUp(props) {
     const navigate = useNavigate();
     const [form, setForm] = useState({});
 
-    const submitHandler = (e) => {
+    const submitHandler = async (e) => {
         e.preventDefault();
         axios.post(`${props.api}/signup/`, form)
         .then((response) => {

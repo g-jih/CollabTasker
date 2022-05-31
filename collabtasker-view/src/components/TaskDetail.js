@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import TaskLog from "./TaskLog";
+import NavBar from "./NavBar";
 import "./TaskDetail.css";
 
 function TaskDetail(props) {
@@ -9,16 +11,13 @@ function TaskDetail(props) {
     const { task_id } = useParams();
     const [task, setTask] = useState({});
     const [taskLogs, setTaskLogs] = useState([]);
-    const [taskComments, setTaskComments] = useState({});
-    const [newComment, setNewComment] = useState('');
 
     useEffect(() => {
         getTask();
         getTaskLogs();
-        //getTaskComments();
     }, [])
 
-    const getTask = () => {
+    const getTask = async () => {
         axios.get(`${props.api}/task/${task_id}/`, {
             headers: {
                 'Authorization': props.token
@@ -31,34 +30,21 @@ function TaskDetail(props) {
         });
     }
 
-    const getTaskLogs = () => {
+    const getTaskLogs = async () => {
         axios.get(`${props.api}/task/tasklogs/${task_id}/`, {
             headers: {
                 'Authorization': props.token
             }
         }).then((response) => {
+            console.log('taskslog', response.data)
             setTaskLogs(response.data);
-            response.data.forEach(tasklog => {
-                getTaskComments(tasklog.id)
-            })
         }) 
         .catch(function (error) {
             alert(error);
         });
     }
 
-    const getTaskComments = (tasklogid) => {        
-        axios.get(`${props.api}/task/taskcomments/${tasklogid}/`, {
-            headers: {
-                'Authorization': props.token
-            }
-        }).then((response) => {
-            console.log('task comments', response.data)
-            setTaskComments(prev => ({...prev, [tasklogid]: response.data}))
-        })
-    }
-
-    const deleteTask = () => {
+    const deleteTask = async () => {
         axios.delete(`${props.api}/task/${task_id}/`, {
             headers: {
                 'Authorization': props.token
@@ -68,83 +54,56 @@ function TaskDetail(props) {
         })
     }
 
-    const submitCommentHandler = (tasklogid) => {
-        axios.post(`${props.api}/task/taskcomments/${tasklogid}/`, {
-            ...newComment
-        }, {
-            headers: {
-                'Authorization': props.token
-            }
-        }).then((response) => {
-            console.log('createTask response', response, response.data.id);
-            navigate(`/task/${response.data.id}`);
-        })
-        .catch(function (error) {
-            alert(error);
-        });
-    }
-
     return (
-        <div>
-            {task.name}
-            <button>
-                <Link to={`/task/form`} state={{ task: task, mode: 'update' }}>
-                    <div>수정</div>
-                </Link>
-            </button>
-            <button onClick={deleteTask}>
-                삭제
-            </button>
-            <table>
-                <thead>
-                    <tr>
-                        <th>name</th>
-                        <th>creator</th>
-                        <th>start_date</th>
-                        <th>end_date</th>
-                        <th>progress</th>
-                        <th>achievement</th>
-                        <th>created_at</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>{task.name}</td>
-                        <td>{task.username}</td>
-                        <td>{task.start_date}</td>
-                        <td>{task.end_date}</td>
-                        <td>{task.progressname}</td>
-                        <td>{task.achievement}</td>
-                        <td>{task.created_at}</td>
-                    </tr>
-                </tbody>
-            </table>
-            <div>Collaborators: {task.participants && task.participants.map(participant => <span key={participant.username}>{participant.username} </span>)}</div>
-            <ul>
-                {taskLogs.map((tasklog, idx) =>
-                    <li key={`tasklog${idx}`} style={{textAlign: "left"}}>
-                        <div>{tasklog.content}</div>
-                        <div>progress: {tasklog.progressname}</div>
-                        <div>achievement: {tasklog.achievement}</div>
-                        <div>writer: {tasklog.username}</div>
-                        <div>published_at: {tasklog.published_at}</div>
-                        <ul>
-                            {taskComments[tasklog.id] && taskComments[tasklog.id].map((comment, i) => 
-                                    <li key={i + comment.content}>
-                                        <div>{comment.content}</div>
-                                        <div>글쓴이: {comment.username}</div>
-                                        <div>created_at: {comment.created_at}</div>
-                                    </li>)}
-                            <li>
-                                <div>
-                                    <div>Comment</div>
-                                    <input  type="text" onChange={(e) => setNewComment(prev => ({...prev, content: e.target.value}))} />
-                                    <button onClick={() => submitCommentHandler(tasklog.id)}>Submit</button>
-                                </div>
-                            </li>
-                        </ul>
-                    </li>)}
-            </ul>
+        <div className="task-detail">
+            <NavBar logout={props.logout} token={props.token}/>
+            <div className="content-body task-detail-container">
+                <div className="task-detail-title">
+                    {task.name}
+                </div>
+                <div className="flex-end">
+                    <Link to={`/task/form`} state={{ task: task, mode: 'update' }}>
+                        <button style={{marginRight: "10px"}}>
+                            수정
+                        </button>   
+                    </Link>
+                    <button onClick={deleteTask} style={{marginRight: "10px"}}>
+                        삭제
+                    </button>
+                </div>
+                <div className="task-detail-item">
+                    <div className="task-detail-name">작업명</div>
+                    <div className="task-detail-content">{task.name}</div>
+                </div>
+                <div className="task-detail-item">
+                    <div className="task-detail-name">작성자</div>
+                    <div className="task-detail-content">{task.username}</div>
+                </div>
+                <div className="task-detail-item">
+                    <div className="task-detail-name">기간</div>
+                    <div className="task-detail-content">{task.start_date} - {task.end_date}</div>
+                </div>
+                <div className="task-detail-item">
+                    <div className="task-detail-name">구분</div>
+                    <div className="task-detail-content">{task.progressname}</div>
+                </div>
+                <div className="task-detail-item">
+                    <div className="task-detail-name">진행률</div>
+                    <div className="task-detail-content">{task.achievement}%</div>
+                </div>
+                <div className="task-detail-item">
+                    <div className="task-detail-name">생성일</div>
+                    <div className="task-detail-content">{task.created_at}</div>
+                </div>
+                <div className="task-detail-item">
+                    <div className="task-detail-name">Collaborators</div>
+                    <div className="task-detail-content">{task.participants && task.participants.map(participant => <span key={participant.username}>{participant.username} </span>)}</div>
+                </div>
+
+                <div>
+                    {taskLogs.map((taskLogId, index) => <TaskLog key={`taskLog${index}`} api={props.api} token={props.token} id={taskLogId} index={index} />)}
+                </div>
+            </div>
         </div>
     )
 }

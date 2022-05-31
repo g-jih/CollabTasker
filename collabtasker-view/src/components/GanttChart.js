@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom"
+import { MdOutlineAdd } from 'react-icons/md';
+
 import "./GanttChart.css"; 
 
 function GanttChart(props) {
@@ -59,14 +62,16 @@ function GanttChart(props) {
 
     return (
         <div className="gantt-chart">
+            <button className="add-button">
+                <Link to={`/task/form`} state={{ task: {}, mode: 'create'}}>
+                    <MdOutlineAdd size="20" color="white" style={{verticalAlign: "middle"}}/>
+                </Link>
+            </button>
             <div className="gantt-chart-grid" style={{width: widthUnit * days + nameWidth }}>
                 {gridLines}
             </div>
             <div className="gantt-chart-header">
                 <div className="gantt-chart-row">
-                    <div className="gantt-chart-name">
-                        Name
-                    </div>
                     <div className="gantt-chart-date-bar">
                         <div className="gantt-chart-date" style={{left: nameWidth}}>
                             {startDate}

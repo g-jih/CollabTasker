@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { MdOutlineAdd } from 'react-icons/md';
 import axios from "axios";
 import "./TaskIndex.css"; 
-import { Link } from "react-router-dom";
 import GanttChart from "./GanttChart";
 import NavBar from "./NavBar";
 
@@ -15,7 +13,7 @@ function TaskIndex(props) {
         getTasks();
     }, []);
 
-    const getTasks = () => {
+    const getTasks = async () => {
         axios.get(`${props.api}/task/`, {
             headers: {
                 'Authorization': props.token
@@ -54,11 +52,6 @@ function TaskIndex(props) {
         <div>
             <NavBar logout={props.logout} token={props.token}/>
             <div className="content-body">
-                <button className="button add-button">
-                    <Link to={`/task/form`} state={{ task: {}, mode: 'create'}}>
-                        <MdOutlineAdd size="30" color="white" style={{verticalAlign: "middle"}}/>
-                    </Link>
-                </button>
                 <GanttChart data={chartData}/>
             </div>
         </div>

@@ -61,9 +61,8 @@ class TaskLogList(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, task_id):
-        task_logs = TaskLog.objects.filter(task=task_id)
-        serializer = TaskLogSerializer(task_logs, many=True)
-        return Response(serializer.data)
+        task_logs = TaskLog.objects.filter(task=task_id).values_list('id', flat=True)
+        return Response(task_logs)
 
     def post(self, request):
         serializer = TaskLogSerializer(data=request.data)
@@ -85,7 +84,7 @@ class TaskLogDetail(APIView):
 
     def get(self, request, task_log_id):
         task_log = self.get_object(task_log_id)
-        user = self.get_object(task_log.user)
+        #user = self.get_object(task_log.user)
         serializer = TaskLogSerializer(task_log)
         return Response(serializer.data)
 
@@ -144,7 +143,7 @@ class TaskCommentDetail(APIView):
     def delete(self, request, task_comment_id, format=None):
         task_comment = self.get_object(task_comment_id)
         task_comment.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(task_comment_id, status=status.HTTP_204_NO_CONTENT)
 
 
 class ItemList(APIView):

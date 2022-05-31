@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
 import './TaskForm.css';
+import NavBar from "./NavBar";
 
 function TaskForm(props) {
     const navigate = useNavigate();
@@ -10,6 +11,7 @@ function TaskForm(props) {
     const [progressTypes, setProgressTypes] = useState([]);
     const [users, setUsers] = useState([]);
     const [form, setForm] = useState(location.state.task);
+    const [selectedUser, setSelectedUser] = useState('');
     const [participants, setParticipants] = useState([]);
     const mode = location.state.mode;
 
@@ -20,7 +22,7 @@ function TaskForm(props) {
         getUsers();
     }, [])
 
-    const getItems = () => {
+    const getItems = async () => {
         axios.get(`${props.api}/task/items/`, {
             headers: {
                 'Authorization': props.token
@@ -36,7 +38,7 @@ function TaskForm(props) {
         });
     }
 
-    const getProgressTypes = () => {
+    const getProgressTypes = async () => {
         axios.get(`${props.api}/task/progresstypes/`, {
             headers: {
                 'Authorization': props.token
@@ -51,14 +53,14 @@ function TaskForm(props) {
         });
     }
 
-    const getUsers = () => {
+    const getUsers = async () => {
         axios.get(`${props.api}/task/users/`, {
             headers: {
                 'Authorization': props.token
             }
         }).then((response) => {
             console.log('users', response.data)
-            setUsers(response.data.map(user => ({value: user.id, label: user.username})));
+            setUsers(response.data);
         }).catch(function (error) {
             alert(error);
         });
@@ -73,7 +75,7 @@ function TaskForm(props) {
         }
     }
 
-    const createTask = () => {
+    const createTask = async () => {
         axios.post(`${props.api}/task/`, {
             ...form,
             participants: undefined,
@@ -92,7 +94,7 @@ function TaskForm(props) {
         });
     }
 
-    const updateTask = () => {
+    const updateTask = async () => {
         axios.patch(`${props.api}/task/${form.id}/`, {
             ...form,
             participants: undefined,
@@ -111,56 +113,68 @@ function TaskForm(props) {
         });
     }
 
-    const participantSelectChangeHandler = (options) => {
-        console.log('options', options)
-        setParticipants(options.map(option => option.value))
+    const participantSelectChangeHandler = (e) => {
+        console.log('options', e.target.value);
+        setSelectedUser(e.target.value);
+        setParticipants(prev => [...prev, e.target.value]);
     }
 
     return (
-        <div>
-            <form onSubmit={submitHandler}>
-                <div className="mb-3" controlId="name">
-                    <label>Name</label>
-                    <input type="text" value={form.name} onChange={(e) => setForm(prev => ({...prev, name: e.target.value}))} />
+        <div className="task-form">
+            <NavBar logout={props.logout} token={props.token}/>
+            <div className="content-body">
+                <div className="task-form-input-container">
+                    <form onSubmit={submitHandler}>
+                        <div className="task-form-item">
+                            <div className="task-form-name">Name</div>
+                            <input type="text" value={form.name} onChange={(e) => setForm(prev => ({...prev, name: e.target.value}))} />
+                        </div>
+                        <div className="task-form-item">
+                            <div className="task-form-name">Start Date</div>
+                            <input type="date" value={form.start_date} onChange={(e) => setForm(prev => ({...prev, start_date: e.target.value}))}/>
+                        </div>
+                        <div className="task-form-item">
+                            <div className="task-form-name">End Date</div>
+                            <input type="date" value={form.end_date} onChange={(e) => setForm(prev => ({...prev, end_date: e.target.value}))}/>
+                        </div>
+                        <div className="task-form-item">
+                            <div className="task-form-name">상위카테고리</div>
+                            <select value={form.item} onChange={(e) => setForm(prev => ({...prev, item: e.target.value}))}>
+                                {items && items.map(item =>
+                                    <option key={item.name} value={item.id}>{item.name}</option>
+                                )}
+                            </select>
+                        </div>
+                        <div className="task-form-item">
+                            <div className="task-form-name">Achievement</div>
+                            <input type="number" value={form.achievement} onChange={(e) => setForm(prev => ({...prev, achievement: e.target.value}))}/>
+                        </div>
+                        <div className="task-form-item">
+                            <div className="task-form-name">Progress</div>
+                            <select value={form.progress_type} onChange={(e) => setForm(prev => ({...prev, progress_type: e.target.value}))}>
+                                {progressTypes && progressTypes.map(type =>
+                                    <option key={type.name} value={type.id}>{type.name}</option>
+                                )}
+                            </select>
+                        </div>
+                        <div className="task-form-item">
+                            <div className="task-form-name">Participants</div>
+                            <select onChange={participantSelectChangeHandler}>
+                                {users.map(user => 
+                                    <option key={`user_${user.id}`} value={user.id}>{user.username}</option>
+                                )}
+                            </select>
+                            <div>{participants}</div>
+                        </div>
+                        <div>
+                            {users.map(user => user.username)}
+                        </div>
+                        <button type="submit">
+                            Submit
+                        </button>
+                    </form>
                 </div>
-                <div className="mb-3">
-                    <div controlId="startDate">
-                        <label>Start Date</label>
-                        <input type="date" value={form.start_date} onChange={(e) => setForm(prev => ({...prev, start_date: e.target.value}))}/>
-                    </div>
-                    <div controlId="endDate">
-                        <label>End Date</label>
-                        <input type="date" value={form.end_date} onChange={(e) => setForm(prev => ({...prev, end_date: e.target.value}))}/>
-                    </div>
-                </div>
-                <div className="mb-3">
-                    <div controlId="item">
-                        <label>상위카테고리</label>
-                        <select value={form.item} onChange={(e) => setForm(prev => ({...prev, item: e.target.value}))}>
-                            {items && items.map(item =>
-                                <option key={item.name} label={item.name}>{item.id}</option>
-                            )}
-                        </select>
-                    </div>
-                    <div controlId="progresstype">
-                        <label>Progress</label>
-                        <select value={form.progress_type} onChange={(e) => setForm(prev => ({...prev, progress_type: e.target.value}))}>
-                            {progressTypes && progressTypes.map(type =>
-                                <option key={type.name} label={type.name}>{type.id}</option>
-                            )}
-                    </select>
-                    </div>
-                    <div controlId="achievement">
-                        <label>Achievement</label>
-                        <input type="number" value={form.achievement} onChange={(e) => setForm(prev => ({...prev, achievement: e.target.value}))}/>
-                    </div>
-                </div>
-                <select options={users} isMulti={true} isSearchable={true}
-                    onChange={participantSelectChangeHandler} />
-                <button variant="primary" type="submit">
-                    Submit
-                </button>
-            </form>
+            </div>
         </div>
     )
 }

@@ -22,16 +22,17 @@ a {
   text-decoration: none !important;
 }
 
-.button {
-  width: 75px;
-  height: 40px;
+button {
+  width: 50px;
+  height: 35px;
   border-radius: 10px;
   border: none;
   transition: all 0.2s linear;
 }
 
-.button:hover {
+button:hover {
   opacity: 0.7;
+  cursor: pointer;
 }
 
 .logo-title {
@@ -47,4 +48,19 @@ a {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+
+.flex-start {
+  display: flex;
+  justify-content: start;
+}
+
+.flex-end {
+  display: flex;
+  justify-content: end;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
 }

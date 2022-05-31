@@ -2,24 +2,31 @@
     position: relative;
     margin: 20px;
     font-size: 0.8rem;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid rgb(183, 183, 183);
 }
 
 .gantt-chart-grid {
     position: absolute;
-    left: 100px;
-    top: 0;
-    height: 100%;
+    left: 135px;
+    top: 50px;
+    height: calc(100% - 50px);
+    border-left: 1px dashed purple;
     border-right: 1px dashed purple;
 }
 
-.gantt-chart-grid-line {
+/*.gantt-chart-grid-line {
     position: absolute;
     height: 100%;
     border-right: 1px dashed purple;
-}
+}*/
 
 .gantt-chart-header {
+    border-bottom: 1px dashed purple;
+}
 
+.gantt-chart-bottom {
 }
 
 .gantt-chart-date-bar {
@@ -48,7 +55,6 @@
 
 .gantt-chart-group {
     margin-bottom: 10px;
-    border-bottom: 1px dashed gray;
 }
 
 .gantt-chart-group:last-child {
@@ -72,10 +78,12 @@
 }
 
 .gantt-chart-item-name {
+    margin-right: 20px;
     background-color: blueviolet;
 }
 
 .gantt-chart-task-name {
+    margin-left: 20px;
     background-color: rgb(211, 178, 243);
 }
 

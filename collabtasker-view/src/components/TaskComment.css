@@ -1,0 +1,33 @@
+.task-comment {
+    border-top: 1px solid rgb(192, 192, 192);
+    padding: 10px;
+}
+
+.task-comment-top {
+    font-size: 0.8rem;
+    margin-bottom: 10px;
+}
+
+.task-comment-creator {
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+.task-comment-create-date {
+    margin-left: 20px;
+    color: rgb(150, 150, 150);
+}
+
+.task-comment-delete {
+    display: none;
+}
+
+.task-comment-delete:hover {
+    color: blueviolet;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.task-comment:hover .task-comment-delete {
+    display: block;
+}
